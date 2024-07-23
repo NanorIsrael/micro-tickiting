@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -8,6 +8,7 @@ import helmet from "helmet";
 
 import userRouter from "./src/routes/user";
 import authRouter from "./src/routes/auth";
+import postRouter from "./src/routes/post";
 // configs
 dotenv.config();
 const app = express();
@@ -20,9 +21,14 @@ app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
-app.use("auth", authRouter);
-app.use("users", userRouter);
+app.use("/auth", authRouter);
+app.use("/users", userRouter);
+app.use("/posts", postRouter);
 
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+	console.log(error)
+  next();
+});
 const PORT = process.env.PORT || 8000;
 mongoose
   .connect(process.env.MONGO_URL as string)
