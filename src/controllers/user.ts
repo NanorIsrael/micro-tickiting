@@ -70,9 +70,36 @@ export const getUserFriends = async (req: Request, res: Response) => {
 /* UPDATES  */
 export const addRemoveFriends = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id, friendId } = req.params;
     const user = await User.findById(id);
-    res.status(200).json(user);
+    const friend = await User.findById(friendId);
+
+    if (!friend) {
+      return res.status(400).json({ error: "Invalid friend id." });
+    }
+
+    if (user?.friends.includes(friendId)) {
+      user.friends = user.friends.filter((id) => id !== friendId);
+      friend.friends = user.friends.filter((friendId) => friendId !== id);
+    } else {
+      user?.friends.push(friendId);
+      friend?.friends.push(id);
+    }
+    await user?.save();
+    await friend?.save();
+
+    const formattedFriends = user?.friends.map(
+      ({ _id, firstName, lastName, occupation, lacation, photo }) => ({
+        _id,
+        firstName,
+        lastName,
+        occupation,
+        lacation,
+        photo,
+      }),
+    );
+
+    res.status(200).json(formattedFriends);
   } catch (error) {
     console.log(error);
     res.status(500).json("An error occured");
