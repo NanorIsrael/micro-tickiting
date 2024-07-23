@@ -21,12 +21,12 @@ app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
-app.use("/auth", authRouter);
+app.use("/", authRouter);
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-	console.log(error)
+  return res.status(500).json({ error: "server error." });
   next();
 });
 const PORT = process.env.PORT || 8000;
