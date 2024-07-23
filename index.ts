@@ -5,10 +5,10 @@ import dotenv from 'dotenv';
 import path from 'path'
 import morgan from 'morgan';
 import helmet from 'helmet';
-import multer from 'multer';
 
-// // configs
-
+import userRouter from './src/routes/user';
+import authRouter from './src/routes/auth';
+// configs
 dotenv.config()
 const app = express()
 app.use(express.json())
@@ -19,16 +19,9 @@ app.use(morgan('common'))
 app.use(cors())
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')))
 
-// file storage
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, 'public/assets');
-	},
-	filename: function (req, file, cb){
-		cb(null, file.originalname)
-	}
-})
-const upload = multer({ storage })
+/* ROUTES */
+app.use('auth', authRouter);
+app.use('user', userRouter);
 
 const PORT = process.env.PORT || 8000
 mongoose.connect((process.env.MONGO_URL) as string).then(() => 
