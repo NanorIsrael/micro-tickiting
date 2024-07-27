@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import path from "path";
 import morgan from "morgan";
 import helmet from "helmet";
-
+import createError from 'http-errors';
 import userRouter from "./src/routes/user";
 import authRouter from "./src/routes/auth";
 import postRouter from "./src/routes/post";
@@ -25,10 +25,15 @@ app.use("/", authRouter);
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  return res.status(500).json({ error: "server error." });
-  next();
+app.use((req: Request, res: Response, next: NextFunction) => {
+   next(createError(404))
 });
+
+app.use((error: Error, req: Request, res: Response) => {
+	/* handle custom errors */
+   res.json({error: error.message });
+});
+
 const PORT = process.env.PORT || 8000;
 mongoose
   .connect(process.env.MONGO_URL as string)
