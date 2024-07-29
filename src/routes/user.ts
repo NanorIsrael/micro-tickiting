@@ -13,7 +13,7 @@ const userRouter = express.Router();
 
 /* ROUTES */
 userRouter.post("/profile", upload.single("photo"), userProfile);
-userRouter.get("/:id", verifyToken, getUser);
+userRouter.get("/:id", getUser);
 userRouter.get("/:id/friends", verifyToken, getUserFriends);
 userRouter.patch("/:id/friendId", verifyToken, addRemoveFriends);
 export default userRouter;
