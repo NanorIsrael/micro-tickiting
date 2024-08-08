@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const verifyToken = async (
   req: Request,
@@ -14,8 +14,10 @@ export const verifyToken = async (
     }
     if (header.startsWith("Bearer ")) {
       const token = header.slice(7, header.length).trim();
-      const verified = jwt.verify(token, process.env.JWT_SECRET as string);
-      req.body = { ...req.body, verified };
+      const verified = jwt.verify(token, process.env.JWT_SECRET as string) as {id: string} & JwtPayload;
+      
+      req.body = { ...req.body, userId: verified.id};
+      console.log('--->', req.body)
       next();
     }
   } catch (error: any) {

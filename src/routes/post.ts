@@ -7,6 +7,6 @@ import { upload } from "../common/utils";
 const postRouter = express.Router();
 
 /* CREATE */
-postRouter.post("/post", verifyToken, upload.single("photo"), createPost);
+postRouter.post("/", upload.single("photo"), verifyToken, createPost);
 
 export default postRouter;

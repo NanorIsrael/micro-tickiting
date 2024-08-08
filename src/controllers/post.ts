@@ -4,12 +4,13 @@ import User from "../models/User";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const { userId, description, picturePath } = req.body;
+    const { userId, description, postPhoto, postPhotoPath } = req.body;
 
     const user = await User.findById(userId);
     const newPost = new Post({
+      userId,
       description,
-      photo: picturePath,
+      photo: postPhotoPath,
       likes: {},
       comments: [],
     });
@@ -18,6 +19,7 @@ export const createPost = async (req: Request, res: Response) => {
     const posts = await Post.find({});
     res.status(201).json(posts);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "an error occured." });
   }
 };
