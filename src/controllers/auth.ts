@@ -33,22 +33,35 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user: UserI | null = await User.findOne({ email: email });
-
+    const user: UserDoc | null = await User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({ message: "user does not exist." });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+
+    const isMatch = await bcrypt.compare(password, user._doc.password);
+
     if (!isMatch) {
       return res
         .status(400)
         .json({ message: "email and password do not match" });
     }
-    const token = jwt.sign(
-      { id: user._id },
-      JSON.parse(process.env.JWT_SECRET as string),
-    );
 
-    res.status(200).json({ token });
-  } catch (error) {}
+    const jwtSecret = process.env.JWT_SECRET as string
+    const token = jwt.sign(
+      { id: user._doc._id },
+      jwtSecret
+    );
+  
+    const clonedUser: { password?: string } = user._doc
+    delete clonedUser.password
+    res.status(200).json({ token, user: clonedUser });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("An §error occured");
+  }
 };
+
+interface UserDoc {
+  $isNew: boolean,
+  _doc: UserI
+}

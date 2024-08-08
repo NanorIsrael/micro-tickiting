@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import path from "path";
 import morgan from "morgan";
 import helmet from "helmet";
-import createError from "http-errors";
 import userRouter from "./src/routes/user";
 import authRouter from "./src/routes/auth";
 import postRouter from "./src/routes/post";
@@ -16,11 +15,11 @@ import postRouter from "./src/routes/post";
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
