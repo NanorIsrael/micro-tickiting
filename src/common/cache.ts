@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { promisify } from 'util'
+import { promisify } from "util";
 const exec = mongoose.Query.prototype.exec;
 // const arguments = []
 

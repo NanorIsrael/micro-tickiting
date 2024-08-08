@@ -46,14 +46,11 @@ export const login = async (req: Request, res: Response) => {
         .json({ message: "email and password do not match" });
     }
 
-    const jwtSecret = process.env.JWT_SECRET as string
-    const token = jwt.sign(
-      { id: user._doc._id },
-      jwtSecret
-    );
-  
-    const clonedUser: { password?: string } = user._doc
-    delete clonedUser.password
+    const jwtSecret = process.env.JWT_SECRET as string;
+    const token = jwt.sign({ id: user._doc._id }, jwtSecret);
+
+    const clonedUser: { password?: string } = user._doc;
+    delete clonedUser.password;
     res.status(200).json({ token, user: clonedUser });
   } catch (error) {
     console.log(error);
@@ -62,6 +59,6 @@ export const login = async (req: Request, res: Response) => {
 };
 
 interface UserDoc {
-  $isNew: boolean,
-  _doc: UserI
+  $isNew: boolean;
+  _doc: UserI;
 }
