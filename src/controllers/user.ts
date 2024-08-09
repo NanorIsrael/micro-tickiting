@@ -44,18 +44,18 @@ export const getUserFriends = async (req: Request, res: Response) => {
     }
 
     const friends: UserI[] = (
-      await Promise.all(user.friends.map((id) => User.findById(id)))
+      await Promise.all(user.friends.map(async (id) => await User.findById(id)))
     ).filter(
       (friend): friend is any => friend !== null && friend !== undefined,
     );
 
     const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, occupation, lacation, photo }) => ({
+      ({ _id, firstName, lastName, occupation, location, photo }) => ({
         _id,
         firstName,
         lastName,
         occupation,
-        lacation,
+        location,
         photo,
       }),
     );

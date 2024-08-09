@@ -6,6 +6,6 @@ export interface UserI {
   firstName: string;
   friends: Array<string>;
   occupation: string;
-  lacation: string;
+  location: string;
   photo: string;
 }

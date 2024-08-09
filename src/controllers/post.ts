@@ -26,9 +26,22 @@ export const createPost = async (req: Request, res: Response) => {
 
 export const getFeedPosts = async (req: Request, res: Response) => {
   try {
+    const { userId } = req.body;
+
+    const posts = await Post.find({ userId });
+    console.log('--------->', posts, userId)
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: "an error occured." });
+  }
+};
+
+export const getUserPosts = async (req: Request, res: Response) => {
+  try {
     const { userId } = req.params;
 
     const posts = await Post.find({ userId });
+    console.log('--------->', posts, userId)
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: "an error occured." });
