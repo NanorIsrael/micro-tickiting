@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/User";
-import { UserI } from "../dtos/user";
+import { UserDoc, UserI } from "../dtos/user";
 
 /* REGISTER USER */
 export const userProfile = async (req: Request, res: Response) => {
@@ -85,16 +85,22 @@ export const addRemoveFriends = async (req: Request, res: Response) => {
       user?.friends.push(friendId);
       friend?.friends.push(id);
     }
-    await user?.save();
+    const savedUser= await user?.save();
     await friend?.save();
 
-    const formattedFriends = user?.friends.map(
-      ({ _id, firstName, lastName, occupation, lacation, photo }) => ({
+    const friends: UserI[] = (
+      await Promise.all(savedUser!.friends.map((id) => User.findById(id)))
+    ).filter(
+      (friend): friend is any => friend !== null && friend !== undefined,
+    );
+
+    const formattedFriends = friends.map(
+      ({ _id, firstName, lastName, occupation, location, photo }) => ({
         _id,
         firstName,
         lastName,
         occupation,
-        lacation,
+        location,
         photo,
       }),
     );

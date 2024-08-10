@@ -12,7 +12,7 @@ export const verifyToken = async (
     if (!header) {
       return res
         .status(400)
-        .json({ error: "authorization header must be included." });
+        .json({ error: "authorization token must be included." });
     }
     if (header.startsWith("Bearer ")) {
       const token = header.slice(7, header.length).trim();
