@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import User from "../models/User";
-import { UserI } from "../dtos/user";
+import { UserDoc, UserI } from "../dtos/user";
 
 /* REGISTER USER */
 export const register = async (req: Request, res: Response) => {
@@ -57,8 +57,3 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json("An §error occured");
   }
 };
-
-interface UserDoc {
-  $isNew: boolean;
-  _doc: UserI;
-}

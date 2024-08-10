@@ -9,3 +9,7 @@ export interface UserI {
   location: string;
   photo: string;
 }
+export interface UserDoc {
+  $isNew: boolean;
+  _doc: UserI;
+}
