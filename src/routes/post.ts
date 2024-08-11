@@ -12,7 +12,7 @@ import { upload } from "../common/utils";
 const postRouter = express.Router();
 
 /* CREATE */
-postRouter.post("/", upload.single("photo"), verifyToken, createPost);
+postRouter.post("/", upload.single("postPhoto"), verifyToken, createPost);
 postRouter.get("/", verifyToken, getFeedPosts);
 postRouter.get("/:id", verifyToken, getUserPosts);
 postRouter.put("/:id/like", verifyToken, likePost);

@@ -5,19 +5,20 @@ import { UserDoc } from "../dtos/user";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const { userId, description, postPhoto, postPhotoPath } = req.body;
+    const { userId, description, postPhotoPath } = req.body;
 
     const user = await User.findById(userId);
     const newPost = new Post({
       userId,
       description,
-      photo: postPhotoPath,
+      picturePath: postPhotoPath,
       likes: {},
       comments: [],
     });
 
     await newPost.save();
     const posts = await Post.find({});
+
     res.status(201).json(posts);
   } catch (error) {
     console.log(error);
@@ -45,6 +46,7 @@ export const getFeedPosts = async (req: Request, res: Response) => {
           userId: post.userId,
           description: post.description,
           likes: post.likes,
+          postPhoto: post.picturePath, 
           comments: post.comments,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
@@ -52,7 +54,9 @@ export const getFeedPosts = async (req: Request, res: Response) => {
         return formattedResult;
       }),
     );
-
+    posts.forEach((post, idx) => {
+      console.log(post)
+    })
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: "an error occured." });
@@ -64,7 +68,6 @@ export const getUserPosts = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     const posts = await Post.find({ userId });
-    console.log("--------->", posts, userId);
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: "an error occured." });
@@ -91,7 +94,29 @@ export const likePost = async (req: Request, res: Response) => {
     });
 
     await updatedPost?.save();
-    res.status(200).json(updatedPost);
+
+    const user: UserDoc | null = await User.findById({
+      _id: updatedPost?.userId
+    });
+
+    if (!user) {
+      throw Error("a valid user was expected.");
+    }
+
+    const formattedResult = {
+      firstName: user._doc.firstName,
+      lastName: user._doc.lastName,
+      _id: updatedPost?._id,
+      userId: updatedPost?.userId,
+      description: updatedPost?.description,
+      postPhoto: updatedPost?.picturePath, 
+      likes: updatedPost?.likes,
+      comments: updatedPost?.comments,
+      createdAt: updatedPost?.createdAt,
+      updatedAt: updatedPost?.updatedAt,
+    };
+
+    res.status(200).json(formattedResult);
   } catch (error) {
     res.status(500).json({ error: "an error occured." });
   }

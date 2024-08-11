@@ -5,21 +5,22 @@ import { UserDoc, UserI } from "../dtos/user";
 /* REGISTER USER */
 export const userProfile = async (req: Request, res: Response) => {
   try {
-    const { userId, photo, location, occupation } =
-      req.body;
+    const { userId, photo, location, occupation } = req.body;
 
-      const updatedUser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         photo,
         location,
         occupation,
-        viewedProfileNumber: Math.ceil((Math.random() * 10000 )- 1),
-        impressions: Math.ceil((Math.random() * 1000) - 1)
-      }, {
-      upsert: true,
-      new: true,
-    })
+        viewedProfileNumber: Math.ceil(Math.random() * 10000 - 1),
+        impressions: Math.ceil(Math.random() * 1000 - 1),
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    );
 
     const savedUser: any = await updatedUser.save();
     const clonedUser: { password?: string } = savedUser._doc;
@@ -92,7 +93,7 @@ export const addRemoveFriends = async (req: Request, res: Response) => {
       user?.friends.push(friendId);
       friend?.friends.push(id);
     }
-    const savedUser= await user?.save();
+    const savedUser = await user?.save();
     await friend?.save();
 
     const friends: UserI[] = (
