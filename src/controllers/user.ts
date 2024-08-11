@@ -5,19 +5,26 @@ import { UserDoc, UserI } from "../dtos/user";
 /* REGISTER USER */
 export const userProfile = async (req: Request, res: Response) => {
   try {
-    const { photo, location, occupation, viewedProfileNumber, impressions } =
+    const { userId, photo, location, occupation } =
       req.body;
 
-    const newUser = new User({
-      photo,
-      location,
-      occupation,
-      impressions,
-      viewedProfileNumber,
-    });
+      const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        photo,
+        location,
+        occupation,
+        viewedProfileNumber: Math.ceil((Math.random() * 10000 )- 1),
+        impressions: Math.ceil((Math.random() * 1000) - 1)
+      }, {
+      upsert: true,
+      new: true,
+    })
 
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    const savedUser: any = await updatedUser.save();
+    const clonedUser: { password?: string } = savedUser._doc;
+    delete clonedUser.password;
+    res.status(201).json(clonedUser);
   } catch (error) {
     console.log(error);
     res.status(500).json("An error occured");
