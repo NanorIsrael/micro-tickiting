@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import User from "../models/User";
-import { UserDoc, UserI } from "../dtos/user";
+import User, { UserI } from "../models/User";
 
 /* REGISTER USER */
 export const register = async (req: Request, res: Response) => {
@@ -19,8 +18,8 @@ export const register = async (req: Request, res: Response) => {
       email,
     });
 
-    const savedUser: any = await newUser.save();
-    const clonedUser: { password?: string } = Object.assign({}, savedUser._doc);
+    const savedUser: UserI = await newUser.save();
+    const clonedUser: { password?: string } = savedUser;
     delete clonedUser.password;
     res.status(201).json(clonedUser);
   } catch (error) {
@@ -33,12 +32,12 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user: UserDoc | null = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({ message: "user does not exist." });
     }
 
-    const isMatch = await bcrypt.compare(password, user._doc.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res
@@ -47,9 +46,9 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const jwtSecret = process.env.JWT_SECRET as string;
-    const token = jwt.sign({ id: user._doc._id }, jwtSecret);
+    const token = jwt.sign({ id: user._id }, jwtSecret);
 
-    const clonedUser: { password?: string } = user._doc;
+    const clonedUser: { password?: string } = user;
     delete clonedUser.password;
     res.status(200).json({ token, user: clonedUser });
   } catch (error) {

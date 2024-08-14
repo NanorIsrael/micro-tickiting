@@ -1,14 +1,5 @@
-export interface UserI {
-  _id: string;
-  email: string;
-  password: string;
-  lastName: string;
-  firstName: string;
-  friends: Array<string>;
-  occupation: string;
-  location: string;
-  photo: string;
-}
+import { UserI } from "../models/User";
+
 export interface UserDoc {
   $isNew: boolean;
   _doc: UserI;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import User from "../models/User";
-import { UserDoc, UserI } from "../dtos/user";
+import User, { UserI } from "../models/User";
+import { UserDoc } from "../dtos/user";
 
 /* REGISTER USER */
 export const userProfile = async (req: Request, res: Response) => {
@@ -22,8 +22,8 @@ export const userProfile = async (req: Request, res: Response) => {
       },
     );
 
-    const savedUser: any = await updatedUser.save();
-    const clonedUser: { password?: string } = savedUser._doc;
+    const savedUser: UserI = await updatedUser.save();
+    const clonedUser: { password?: string } = savedUser;
     delete clonedUser.password;
     res.status(201).json(clonedUser);
   } catch (error) {
@@ -54,7 +54,7 @@ export const getUserFriends = async (req: Request, res: Response) => {
     const friends: UserI[] = (
       await Promise.all(user.friends.map(async (id) => await User.findById(id)))
     ).filter(
-      (friend): friend is any => friend !== null && friend !== undefined,
+      (friend): friend is UserI => friend !== null && friend !== undefined,
     );
 
     const formattedFriends = friends.map(
@@ -78,20 +78,26 @@ export const getUserFriends = async (req: Request, res: Response) => {
 /* UPDATES  */
 export const addRemoveFriends = async (req: Request, res: Response) => {
   try {
-    const { id, friendId } = req.params;
-    const user = await User.findById(id);
+    const { friendId } = req.params;
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
     const friend = await User.findById(friendId);
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid user id." });
+    }
 
     if (!friend) {
       return res.status(400).json({ error: "Invalid friend id." });
     }
 
-    if (user?.friends.includes(friendId)) {
+    if (user.friends.includes(friendId)) {
       user.friends = user.friends.filter((id) => id !== friendId);
-      friend.friends = user.friends.filter((friendId) => friendId !== id);
+      friend.friends = user.friends.filter((friendId) => friendId !== userId);
     } else {
       user?.friends.push(friendId);
-      friend?.friends.push(id);
+      friend?.friends.push(userId);
     }
     const savedUser = await user?.save();
     await friend?.save();

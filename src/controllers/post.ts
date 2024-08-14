@@ -46,7 +46,7 @@ export const getFeedPosts = async (req: Request, res: Response) => {
           userId: post.userId,
           description: post.description,
           likes: post.likes,
-          postPhoto: post.picturePath, 
+          postPhoto: post.picturePath,
           comments: post.comments,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
@@ -55,8 +55,8 @@ export const getFeedPosts = async (req: Request, res: Response) => {
       }),
     );
     posts.forEach((post, idx) => {
-      console.log(post)
-    })
+      console.log(post);
+    });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: "an error occured." });
@@ -96,7 +96,7 @@ export const likePost = async (req: Request, res: Response) => {
     await updatedPost?.save();
 
     const user: UserDoc | null = await User.findById({
-      _id: updatedPost?.userId
+      _id: updatedPost?.userId,
     });
 
     if (!user) {
@@ -109,7 +109,7 @@ export const likePost = async (req: Request, res: Response) => {
       _id: updatedPost?._id,
       userId: updatedPost?.userId,
       description: updatedPost?.description,
-      postPhoto: updatedPost?.picturePath, 
+      postPhoto: updatedPost?.picturePath,
       likes: updatedPost?.likes,
       comments: updatedPost?.comments,
       createdAt: updatedPost?.createdAt,
