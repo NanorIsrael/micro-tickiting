@@ -7,9 +7,6 @@ import dotenv from "dotenv";
 import path from "path";
 import morgan from "morgan";
 import helmet from "helmet";
-import userRouter from "./src/routes/user";
-import authRouter from "./src/routes/auth";
-import postRouter from "./src/routes/post";
 
 // configs
 dotenv.config();
@@ -23,9 +20,7 @@ app.use(morgan("common"));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
-app.use("/", authRouter);
-app.use("/users", userRouter);
-app.use("/posts", postRouter);
+
 
 // Middleware for handling 404 errors
 app.use((req: Request, res: Response, next: NextFunction) => {
