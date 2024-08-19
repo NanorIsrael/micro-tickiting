@@ -6,6 +6,11 @@ import path from "path";
 import morgan from "morgan";
 import helmet from "helmet";
 
+import { currentUserRouter } from "./routes/current-user";
+import { signinRouter } from "./routes/signin";
+import { signoutRouter } from "./routes/signout";
+import { signupRouter } from "./routes/signup";
+
 // configs
 dotenv.config();
 const app = express();
@@ -18,9 +23,10 @@ app.use(morgan("common"));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
-app.get("/api/users/currentuser", (req, res) => {
-  res.status(200).send("Hi there")
-})
+app.use(currentUserRouter)
+app.use(signinRouter)
+app.use(signoutRouter)
+app.use(signupRouter)
 
 // Middleware for handling 404 errors
 app.use((req: Request, res: Response, next: NextFunction) => {
