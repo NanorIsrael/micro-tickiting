@@ -45,10 +45,5 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 const PORT = process.env.PORT || 8000;
-mongoose.Promise = global.Promise;
-mongoose
-  .connect(process.env.MONGO_URL as string)
-  .then(() =>
-    app.listen(PORT, () => console.log("Sever running on port " + PORT)),
-  )
-  .catch((error) => console.log(`${error}`));
+
+app.listen(PORT, () => console.log("Sever running on port " + PORT))
