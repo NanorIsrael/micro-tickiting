@@ -5,12 +5,12 @@ const errorHandler = (error: Error, req: Request, res: Response, next: NextFunct
 	const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 
 	const formattedError = [{
-		messsage: 'something went wrong',
+		messsage: 'Something went wrong',
 		field: null
 	}]
 
 	if (error instanceof CustomError) {
-		return res.status(400).json({errors: error.serializeError()})
+		return res.status(error.statusCode).json({errors: error.serializeError()})
 	}
 	
 	res.status(statusCode).json({errors: formattedError})
