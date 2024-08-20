@@ -1,5 +1,5 @@
 import express from "express";
-import 'express-async-errors'
+import "express-async-errors";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -26,17 +26,17 @@ app.use(morgan("common"));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* ROUTES */
-app.use(currentUserRouter)
-app.use(signinRouter)
-app.use(signoutRouter)
-app.use(signupRouter)
-app.all('*', async () => {
+app.use(currentUserRouter);
+app.use(signinRouter);
+app.use(signoutRouter);
+app.use(signupRouter);
+app.all("*", async () => {
   throw new NotFoundError();
-})
+});
 
 // General error handling middleware
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => console.log("Sever running on port " + PORT))
+app.listen(PORT, () => console.log("Sever running on port " + PORT));
