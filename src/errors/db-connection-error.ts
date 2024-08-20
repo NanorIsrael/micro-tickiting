@@ -1,10 +1,19 @@
+import CustomError from "./custom-error";
 
 
-export class DatabaseConnectionError extends Error {
-	readonly reasons = "error connecting to database."
+export class DatabaseConnectionError extends CustomError {
+	statusCode: number = 500;
+	readonly reason = "error connecting to database."
+
 	constructor() {
-		super();
+		super("error connecting to database.");
 		Object.setPrototypeOf(this, DatabaseConnectionError.prototype)
 	}
-	
+
+	serializeError(): { message: string; field?: string | null | undefined; }[] {
+		return [{
+			message: this.reason,
+			field: null
+		}]
+	}
 }
