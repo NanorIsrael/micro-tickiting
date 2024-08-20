@@ -10,6 +10,7 @@ import { currentUserRouter } from "./routes/current-user";
 import { signinRouter } from "./routes/signin";
 import { signoutRouter } from "./routes/signout";
 import { signupRouter } from "./routes/signup";
+import errorHandler from "./middlewares/error-handler";
 
 // configs
 dotenv.config();
@@ -36,13 +37,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // General error handling middleware
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-
-  res.status(statusCode).json({
-    message: error.message,
-  });
-});
+app.use(errorHandler);
+// app.use((err: Error, req: Request, res: Response, next) => res.send("hi"));
 
 const PORT = process.env.PORT || 8000;
 
