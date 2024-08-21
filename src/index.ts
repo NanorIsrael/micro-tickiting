@@ -38,5 +38,14 @@ app.all("*", async () => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
+const start = async function () {
+  const DB_URL = 'mongodb://auth-mongo-srv:27017/auth'
+  try {
+    await mongoose.connect(DB_URL);
 
-app.listen(PORT, () => console.log("Sever running on port " + PORT));
+  } catch(err) {
+    console.log(err)
+  }
+  app.listen(PORT, () => console.log("Sever running on port " + PORT));
+}
+start();
