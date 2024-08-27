@@ -27,7 +27,15 @@ const userSchema = new Schema({
 		type: String,
 		required: true,
 	}
-},{
+}, {
+	toJSON: {
+		transform: function (doc, ret) {
+			ret.id = ret._id,
+			delete ret.password,
+			delete ret.__v
+			delete ret._id
+		}
+	},
 	timestamps: true
 })
 userSchema.statics.build = function (attr: UserI) {return new User(attr)};
