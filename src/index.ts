@@ -18,13 +18,13 @@ import NotFoundError from "./errors/not-found-error";
 // configs
 dotenv.config();
 const app = express();
-app.set("trust proxy", true)
+app.set("trust proxy", true);
 app.use(
   cookieSession({
     secure: false,
-    signed: false
-  })
-)
+    signed: false,
+  }),
+);
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -48,21 +48,20 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 8000;
 const start = async function () {
   if (!process.env.JWT_KEY) {
-    throw new Error('JWT_KEY must be defined')
+    throw new Error("JWT_KEY must be defined");
   }
 
-  const DB_URL = process.env.DB_URL
+  const DB_URL = process.env.DB_URL;
 
   if (!process.env.DB_URL) {
-    throw new Error('DB_URL must be defined')
+    throw new Error("DB_URL must be defined");
   }
 
   try {
     await mongoose.connect(DB_URL!);
-
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
   app.listen(PORT, () => console.log("Sever running on port " + PORT));
-}
+};
 start();
